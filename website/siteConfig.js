@@ -9,16 +9,8 @@
 // site configuration options.
 
 // List of projects/orgs using your project for the users page.
-const users = [
-  {
-    caption: 'User1',
-    // You will need to prepend the image path with your baseUrl
-    // if it is not '/', like: '/test-site/img/docusaurus.svg'.
-    image: '/img/docusaurus.svg',
-    infoLink: 'https://www.facebook.com',
-    pinned: true,
-  },
-];
+
+const users = require('./data/users.json');
 
 const siteConfig = {
   title: 'FDC3', // Title for your website.
@@ -32,11 +24,13 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     {doc: 'fdc3-intro', label: 'Docs'},    
-    {doc: 'use-cases/use-cases-intro', label: 'Use Cases'},
+    {doc: 'use-cases/overview', label: 'Use Cases'},
     {page: 'get-involved', label: 'Get Involved'},
     {doc: 'why-fdc3', label: 'Why FDC3'}
    //, {blog: true, label: 'News'}
   ],
+
+  defaultVersionShown: '1.0',
 
   twitterUsername: 'fdc3_',
 
@@ -51,7 +45,7 @@ const siteConfig = {
   /* Colors for website */
   colors: {
     primaryColor: '#00b5e2',
-    secondaryColor: '#205C3B',
+    secondaryColor: '#0086bf'
   },
 
   /* Custom fonts for website */

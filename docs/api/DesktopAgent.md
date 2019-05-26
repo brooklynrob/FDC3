@@ -15,27 +15,27 @@ A Desktop Agent can be connected to one or more App Directories and will use dir
 ### `open`
 
 ```typescript
-  open(name: string, context?: Context): Promise<void>;
+open(name: string, context?: Context): Promise<void>;
 ```
 
 Launches/links to an app by name.
 
 If a [`Context`](Context) object is passed in, this object will be provided to the opened application via a contextListener.
 The Context argument is functionally equivalent to opening the target app with no context and broadcasting the context directly to it.
-If opening errors, it returns an `Error` with a string from the [`OpenError`](OpenError) enumeration.
+If opening errors, it returns an `Error` with a string from the [`OpenError`](Errors#openerror) enumeration.
 
 #### Example
  ```javascript
-    //no context
-    await agent.open('myApp');
-    
-    //with context
-    await agent.open('myApp', context);
+//no context
+await agent.open('myApp');
+
+//with context
+await agent.open('myApp', context);
 ```
 
 #### See also
 * [`Context`](Context)
-* [`OpenError`](Errors#OpenError)
+* [`OpenError`](Errors#openerror)
 
 ### `findIntent`
 
@@ -46,46 +46,46 @@ findIntent(intent: string, context?: Context): Promise<AppIntent>;
 Find out more information about a particular intent by passing its name, and optionally its context.
 
 _findIntent_ is effectively granting programmatic access to the Desktop Agent's resolver. 
-A promise resolving to the intent, its metadata and metadata about the apps that registered it is returned.
+It returns a promise resolving to the intent, its metadata and metadata about the apps that are registered to handle it.
 This can be used to raise the intent against a specific app.
  
- 
- If the resolution fails, the promise will return an `Error` with a string from the [`ResolveError`](Errors#ResolveError) enumeration.
+ If the resolution fails, the promise will return an `Error` with a string from the [`ResolveError`](Errors#resolveerror) enumeration.
 
 #### Examples
 ```javascript
-  // I know 'StartChat' exists as a concept, and want to know more about it ...
-  const appIntent = await agent.findIntent("StartChat");
-  // returns a single AppIntent:
-  // {
-  //     intent: { name: "StartChat", displayName: "Chat" },
-  //     apps: [{ name: "Skype" }, { name: "Symphony" }, { name: "Slack" }]
-  // }
+// I know 'StartChat' exists as a concept, and want to know more about it ...
+const appIntent = await agent.findIntent("StartChat");
+// returns a single AppIntent:
+// {
+//     intent: { name: "StartChat", displayName: "Chat" },
+//     apps: [{ name: "Skype" }, { name: "Symphony" }, { name: "Slack" }]
+// }
 
-  // raise the intent against a particular app
-  await agent.raiseIntent(appIntent.intent.name, context, appIntent.apps[0].name);
-  ```
+// raise the intent against a particular app
+await agent.raiseIntent(appIntent.intent.name, context, appIntent.apps[0].name);
+```
+
 #### See also
-* [`ResolveError`](Errors#ResolveError)
+* [`ResolveError`](Errors#resolveerror)
 
 ### `findIntentsByContext`
 
 ```typescript
-  findIntentsByContext(context: Context): Promise<Array<AppIntent>>;
+findIntentsByContext(context: Context): Promise<Array<AppIntent>>;
 ```
 
 Find all the avalable intents for a particular context.
 _findIntentsByContext_ is effectively granting programmatic access to the Desktop Agent's resolver. 
-A promise resolving to all the intents, their metadata and metadata about the apps that registered it is returned, based on the context types the intents have registered.
+A promise resolving to all the intents, their metadata and metadata about the apps that registered as handlers is returned, based on the context types the intents have registered.
  
- If the resolution fails, the promise will return an `Error` with a string from the [`ResolveError`](Errors#ResolveError) enumeration.
+ If the resolution fails, the promise will return an `Error` with a string from the [`ResolveError`](Errors#resolveerror) enumeration.
  
  #### Examples
  ```javascript
- // I have a context object, and I want to know what I can do with it, hence, I look for for intents...
- const appIntents = await agent.findIntentsForContext(context);
+ // I have a context object, and I want to know what I can do with it, hence, I look for intents...
+ const appIntents = await agent.findIntentsByContext(context);
  
- // returns for example:
+ // returns, for example:
  // [{
  //     intent: { name: "StartCall", displayName: "Call" },
  //     apps: [{ name: "Skype" }]
@@ -117,7 +117,7 @@ Publishes context to other apps on the desktop.
 
 #### Examples
 ```javascript
- agent.broadcast(context);
+agent.broadcast(context);
 ```
 #### See also
 * [addContextListener](#addcontextlistener)
@@ -125,7 +125,7 @@ Publishes context to other apps on the desktop.
 ### `raiseIntent`
 
 ```typescript
-  raiseIntent(intent: string, context: Context, target?: string): Promise<IntentResolution>;
+raiseIntent(intent: string, context: Context, target?: string): Promise<IntentResolution>;
 ```
 Raises an intent to the desktop agent to resolve.
 #### Examples
@@ -140,7 +140,7 @@ agent.raiseIntent("StartChat", newContext, intentR.source);
 
 ### `addIntentListener`
 ```typescript
-  addIntentListener(intent: string, handler: (context: Context) => void): Listener;
+addIntentListener(intent: string, handler: (context: Context) => void): Listener;
 ```
  Adds a listener for incoming Intents from the Agent.
 #### See also
@@ -149,7 +149,7 @@ agent.raiseIntent("StartChat", newContext, intentR.source);
 
 ### `addContextListener`
 ```typescript
-  addContextListener(handler: (context: Context) => void): Listener;
+addContextListener(handler: (context: Context) => void): Listener;
 ```
 Adds a listener for incoming context broadcast from the Desktop Agent.
 
@@ -207,13 +207,13 @@ interface IntentResolution {
 IntentResolution provides a standard format for data returned upon resolving an intent.
  
 #### Example
- ```javascript
- //resolve a "Chain" type intent
- var intentR = await agent.raiseIntent("intentName", context);
- //resolve a "Client-Service" type intent with data response
- var intentR = await agent.raiseIntent("intentName", context);
- var dataR = intentR.data;
- ```
+```javascript
+//resolve a "Chain" type intent
+var intentR = await agent.raiseIntent("intentName", context);
+//resolve a "Client-Service" type intent with data response
+var intentR = await agent.raiseIntent("intentName", context);
+var dataR = intentR.data;
+```
 
 #### See also
 * [`DesktopAgent.raiseIntent`](#raiseintent)
@@ -227,7 +227,7 @@ interface Listener {
 }
 ```
 
-A Listener object is returned when an application subscribes to intents or context broadcasts via the [`addIntentListener`](DesktopAgent#addintentlistener) or [`addContextListener`](DesktopAgent#addcontextlistener) methods on the [DesktopAgent](DesktopAgent) object.
+A Listener object is returned when an application subscribes to intents or context broadcasts via the [`addIntentListener`](#addintentlistener) or [`addContextListener`](#addcontextlistener) methods on the [DesktopAgent](DesktopAgent) object.
 The `unsubscribe` method on the listener object allows the application to cancel the subscription.
 
 #### See also

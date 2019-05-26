@@ -1,9 +1,10 @@
 ---
-id: use-cases-intro
+id: version-1.0-overview
 title: Use Cases Overview
 hide_title: true
-sidebar_label: Use Cases Overview
+sidebar_label: Overview
 layout: default
+original_id: overview
 ---
 
 # Use Cases Overview
